@@ -6,10 +6,10 @@ const QRGenerator = ({ value, label }) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      {label && <p className="text-sm text-slate-500">{label}</p>}
-      <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-        <QRCodeCanvas value={value} size={160} level="H" includeMargin />
+    <div className="flex flex-col items-center gap-3">
+      {label && <p className="text-sm font-medium text-white/60">{label}</p>}
+      <div className="glass-dark rounded-2xl p-6 shadow-2xl">
+        <QRCodeCanvas value={value} size={180} level="H" includeMargin />
       </div>
     </div>
   );

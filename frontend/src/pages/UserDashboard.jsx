@@ -30,67 +30,107 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 py-8">
-      <section className="grid gap-6 rounded-xl border border-slate-200 bg-white p-6 shadow md:grid-cols-2">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-800">Meal credits overview</h2>
-          <p className="mt-4 text-5xl font-bold text-messmate-primary">{user.credits}</p>
-          <p className="mt-2 text-sm text-slate-500">
-            Present this QR code at the mess counter to redeem a meal.
-          </p>
-          <div className="mt-4 inline-flex items-center gap-6">
+    <div className="mx-auto max-w-6xl space-y-6 py-8">
+      {/* Welcome Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white">Hi {user.name.split(' ')[0]},</h1>
+        <p className="mt-1 text-lg text-white/70">Have a great day</p>
+      </div>
+
+      {/* Main Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Credits Card */}
+        <div className="glass-dark rounded-3xl p-6 shadow-2xl lg:col-span-2">
+          <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <p className="text-xs uppercase text-slate-500">Name</p>
-              <p className="text-base font-medium text-slate-700">{user.name}</p>
+              <h2 className="text-lg font-semibold text-white/90">Meal Credits</h2>
+              <div className="mt-6 flex items-baseline gap-2">
+                <p className="text-6xl font-bold text-white">{user.credits}</p>
+                <span className="text-xl text-white/60">credits</span>
+              </div>
+              <p className="mt-4 text-sm text-white/60">
+                Present your QR code at the mess counter to redeem meals
+              </p>
+              <div className="mt-6 flex gap-4">
+                <div className="rounded-xl bg-white/10 px-4 py-3">
+                  <p className="text-xs uppercase tracking-wide text-white/50">Name</p>
+                  <p className="mt-1 font-medium text-white">{user.name}</p>
+                </div>
+                <div className="rounded-xl bg-white/10 px-4 py-3">
+                  <p className="text-xs uppercase tracking-wide text-white/50">Roll</p>
+                  <p className="mt-1 font-medium text-white">{user.rollNumber}</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs uppercase text-slate-500">Roll</p>
-              <p className="text-base font-medium text-slate-700">{user.rollNumber}</p>
+            <div className="flex items-center justify-center">
+              <QRGenerator value={user.qrCodeData} label="Your QR Code" />
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center">
-          <QRGenerator value={user.qrCodeData} label="Your unique QR code" />
-        </div>
-      </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow">
-        <h2 className="text-lg font-semibold text-slate-800">Recent transactions</h2>
+        {/* Quick Stats */}
+        <div className="glass-dark rounded-3xl p-6 shadow-2xl">
+          <h3 className="text-lg font-semibold text-white/90">Account Stats</h3>
+          <div className="mt-6 space-y-4">
+            <div className="rounded-xl bg-gradient-to-br from-messmate-primary to-messmate-secondary p-4">
+              <p className="text-sm text-white/80">Total Transactions</p>
+              <p className="mt-1 text-3xl font-bold text-white">{transactions.length}</p>
+            </div>
+            <div className="rounded-xl bg-white/10 p-4">
+              <p className="text-sm text-white/60">Member Since</p>
+              <p className="mt-1 text-sm font-medium text-white">
+                {new Date(user.createdAt).toLocaleDateString('en-US', { 
+                  month: 'short', 
+                  year: 'numeric' 
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Transactions */}
+      <div className="glass-dark rounded-3xl p-6 shadow-2xl">
+        <h2 className="text-lg font-semibold text-white/90">Recent Transactions</h2>
         {loading ? (
           <Loader message="Loading transactions..." />
         ) : error ? (
-          <p className="mt-4 rounded bg-red-50 p-3 text-sm text-red-600">{error}</p>
+          <div className="mt-4 rounded-xl bg-red-500/20 p-4 text-sm text-red-200">{error}</div>
         ) : transactions.length === 0 ? (
-          <p className="mt-4 text-sm text-slate-500">No transactions recorded yet.</p>
+          <p className="mt-4 text-sm text-white/50">No transactions yet</p>
         ) : (
-          <div className="mt-4 overflow-hidden rounded-lg border border-slate-100">
-            <table className="min-w-full divide-y divide-slate-100 text-sm">
-              <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
-                <tr>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Action</th>
-                  <th className="px-4 py-3 text-right">Amount</th>
-                  <th className="px-4 py-3 text-right">Balance</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 bg-white text-slate-700">
-                {transactions.map((trx) => (
-                  <tr key={trx._id}>
-                    <td className="px-4 py-3">
+          <div className="mt-4 space-y-2">
+            {transactions.slice(0, 5).map((trx) => (
+              <div
+                key={trx._id}
+                className="flex items-center justify-between rounded-xl bg-white/5 p-4 transition hover:bg-white/10"
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                    trx.amount > 0 ? 'bg-green-500/20' : 'bg-red-500/20'
+                  }`}>
+                    <span className="text-lg">{trx.amount > 0 ? '↑' : '↓'}</span>
+                  </div>
+                  <div>
+                    <p className="font-medium capitalize text-white">{trx.actionType}</p>
+                    <p className="text-xs text-white/50">
                       {new Date(trx.createdAt).toLocaleString()}
-                    </td>
-                    <td className="px-4 py-3 capitalize">{trx.actionType}</td>
-                    <td className="px-4 py-3 text-right font-medium">
-                      {trx.amount > 0 ? `+${trx.amount}` : trx.amount}
-                    </td>
-                    <td className="px-4 py-3 text-right text-slate-500">{trx.balanceAfter}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={`text-lg font-bold ${
+                    trx.amount > 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {trx.amount > 0 ? '+' : ''}{trx.amount}
+                  </p>
+                  <p className="text-xs text-white/50">Balance: {trx.balanceAfter}</p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 };

@@ -11,9 +11,9 @@ import './App.css';
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen">
       <Navbar />
-      <main className="px-4">
+      <main className="px-4 pb-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />

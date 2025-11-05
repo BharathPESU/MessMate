@@ -32,55 +32,70 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="mx-auto mt-12 max-w-md rounded-xl border border-slate-200 bg-white p-8 shadow">
-      <h1 className="text-2xl font-semibold text-slate-800">Welcome back</h1>
-      <p className="mt-2 text-sm text-slate-500">
-        Sign in to manage your meal credits.
-      </p>
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-600">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={formState.email}
-            onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
-          />
+    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
+      <div className="glass-dark w-full max-w-md rounded-3xl p-8 shadow-2xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white">Welcome back</h1>
+          <p className="mt-2 text-white/60">
+            Sign in to manage your meal credits
+          </p>
         </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-slate-600">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            value={formState.password}
-            onChange={handleChange}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
-          />
-        </div>
-        {error && <p className="text-sm text-red-500">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-messmate-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-messmate-secondary disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {loading ? 'Signing in...' : 'Login'}
-        </button>
-      </form>
-      <p className="mt-6 text-center text-sm text-slate-500">
-        New here?{' '}
-        <Link to="/register" className="text-messmate-primary hover:underline">
-          Create an account
-        </Link>
-      </p>
+        
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-white/80">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={formState.email}
+              onChange={handleChange}
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
+              placeholder="Enter your email"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-white/80">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              value={formState.password}
+              onChange={handleChange}
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
+              placeholder="Enter your password"
+            />
+          </div>
+          
+          {error && (
+            <div className="rounded-xl bg-red-500/20 px-4 py-3 text-sm text-red-200">
+              {error}
+            </div>
+          )}
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-xl bg-gradient-to-r from-messmate-primary to-messmate-secondary px-4 py-3 font-medium text-white shadow-lg transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {loading ? 'Signing in...' : 'Login'}
+          </button>
+        </form>
+        
+        <p className="mt-6 text-center text-sm text-white/60">
+          New here?{' '}
+          <Link to="/register" className="font-medium text-white hover:text-messmate-secondary">
+            Create an account
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

@@ -5,15 +5,24 @@ const Navbar = () => {
   const { user, isAdmin, logout } = useAuth();
 
   return (
-    <header className="bg-messmate-primary text-white shadow">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link to="/" className="text-xl font-semibold">MessMate</Link>
-        <nav className="flex items-center gap-4 text-sm">
+    <header className="glass-dark sticky top-0 z-50 shadow-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-messmate-primary to-messmate-secondary shadow-lg">
+            <span className="text-xl font-bold text-white">M</span>
+          </div>
+          <span className="text-xl font-bold text-white">MessMate</span>
+        </Link>
+        <nav className="flex items-center gap-3">
           {user && (
             <NavLink
               to={isAdmin ? '/admin' : '/dashboard'}
               className={({ isActive }) =>
-                `rounded px-3 py-1 transition ${isActive ? 'bg-white text-messmate-primary' : 'hover:bg-messmate-secondary/80'}`
+                `rounded-xl px-4 py-2 text-sm font-medium transition ${
+                  isActive
+                    ? 'bg-white text-messmate-primary shadow-lg'
+                    : 'text-white/80 hover:bg-white/10'
+                }`
               }
             >
               Dashboard
@@ -23,7 +32,11 @@ const Navbar = () => {
             <NavLink
               to="/admin/scanner"
               className={({ isActive }) =>
-                `rounded px-3 py-1 transition ${isActive ? 'bg-white text-messmate-primary' : 'hover:bg-messmate-secondary/80'}`
+                `rounded-xl px-4 py-2 text-sm font-medium transition ${
+                  isActive
+                    ? 'bg-white text-messmate-primary shadow-lg'
+                    : 'text-white/80 hover:bg-white/10'
+                }`
               }
             >
               Scanner
@@ -34,7 +47,11 @@ const Navbar = () => {
               <NavLink
                 to="/login"
                 className={({ isActive }) =>
-                  `rounded px-3 py-1 transition ${isActive ? 'bg-white text-messmate-primary' : 'hover:bg-messmate-secondary/80'}`
+                  `rounded-xl px-4 py-2 text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-white text-messmate-primary shadow-lg'
+                      : 'text-white/80 hover:bg-white/10'
+                  }`
                 }
               >
                 Login
@@ -42,7 +59,11 @@ const Navbar = () => {
               <NavLink
                 to="/register"
                 className={({ isActive }) =>
-                  `rounded px-3 py-1 transition ${isActive ? 'bg-white text-messmate-primary' : 'hover:bg-messmate-secondary/80'}`
+                  `rounded-xl px-4 py-2 text-sm font-medium transition ${
+                    isActive
+                      ? 'bg-white text-messmate-primary shadow-lg'
+                      : 'bg-gradient-to-r from-messmate-primary to-messmate-secondary text-white shadow-lg hover:shadow-xl'
+                  }`
                 }
               >
                 Register
@@ -53,7 +74,7 @@ const Navbar = () => {
             <button
               type="button"
               onClick={logout}
-              className="rounded bg-white px-3 py-1 text-messmate-primary transition hover:bg-slate-100"
+              className="rounded-xl bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/20"
             >
               Logout
             </button>
