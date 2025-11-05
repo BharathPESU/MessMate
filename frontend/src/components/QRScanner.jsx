@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 
-const QRScanner = ({ onScan, onError }) => {
+const QRScanner = ({ onScan, onError, onStop }) => {
   const [cameraError, setCameraError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isScanning, setIsScanning] = useState(false);
+  const [lastScanned, setLastScanned] = useState('');
   const qrCodeScannerRef = useRef(null);
   const hasStartedRef = useRef(false);
+  const scanCooldownRef = useRef(false);
 
   useEffect(() => {
     if (hasStartedRef.current) return;
@@ -15,6 +17,27 @@ const QRScanner = ({ onScan, onError }) => {
       hasStartedRef.current = true;
       
       try {
+        // Wait for DOM element to be available
+        const waitForElement = () => {
+          return new Promise((resolve, reject) => {
+            const checkElement = () => {
+              const element = document.getElementById('qr-reader');
+              if (element) {
+                resolve(element);
+              } else {
+                setTimeout(checkElement, 100);
+              }
+            };
+            checkElement();
+            // Timeout after 5 seconds
+            setTimeout(() => reject(new Error('QR reader element not found after timeout')), 5000);
+          });
+        };
+
+        // Wait for the element to exist
+        await waitForElement();
+        console.log('QR reader element found');
+
         // Check if we're in a secure context or localhost
         const isSecureContext = window.isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         
@@ -74,16 +97,40 @@ const QRScanner = ({ onScan, onError }) => {
           console.log('Using first available camera:', devices[0].label);
         }
 
-        // Start the scanner
+        // Start the scanner with configuration to show video
         await scanner.start(
           cameraId,
           {
             fps: 10,
             qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.777778, // 16:9 ratio
+            disableFlip: false,
+            videoConstraints: {
+              facingMode: 'environment',
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            }
           },
           (decodedText) => {
             console.log('QR Code detected:', decodedText);
+            
+            // Prevent multiple scans in quick succession
+            if (scanCooldownRef.current) {
+              console.log('Scan cooldown active, ignoring');
+              return;
+            }
+            
+            scanCooldownRef.current = true;
+            setLastScanned(decodedText);
+            
+            // Call the onScan callback with the decoded text
             onScan(decodedText);
+            
+            // Reset cooldown after 3 seconds
+            setTimeout(() => {
+              scanCooldownRef.current = false;
+              setLastScanned('');
+            }, 3000);
           },
           () => {
             // Scan errors are normal and frequent
@@ -93,6 +140,21 @@ const QRScanner = ({ onScan, onError }) => {
         console.log('Scanner started successfully');
         setCameraError(false);
         setIsScanning(true);
+        
+        // Debug: Check if video element exists
+        setTimeout(() => {
+          const videoElements = document.querySelectorAll('#qr-reader video');
+          console.log('Video elements found:', videoElements.length);
+          videoElements.forEach((video, idx) => {
+            console.log(`Video ${idx}:`, {
+              width: video.videoWidth,
+              height: video.videoHeight,
+              style: video.style.cssText,
+              display: getComputedStyle(video).display,
+              visibility: getComputedStyle(video).visibility
+            });
+          });
+        }, 1000);
         
       } catch (err) {
         console.error('Scanner error:', err);
@@ -154,6 +216,21 @@ const QRScanner = ({ onScan, onError }) => {
     }, 100);
   };
 
+  const handleStopCamera = async () => {
+    try {
+      if (qrCodeScannerRef.current) {
+        await qrCodeScannerRef.current.stop();
+        qrCodeScannerRef.current = null;
+        hasStartedRef.current = false;
+        setIsScanning(false);
+        setCameraError(false);
+        onStop?.();
+      }
+    } catch (err) {
+      console.error('Error stopping camera:', err);
+    }
+  };
+
   if (cameraError) {
     return (
       <div className="text-center p-6 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
@@ -182,31 +259,61 @@ const QRScanner = ({ onScan, onError }) => {
     );
   }
 
-  if (!isScanning) {
-    return (
-      <div className="text-center p-8 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
-        <div className="mb-4">
-          <div className="w-16 h-16 mx-auto border-4 border-messmate-primary border-t-transparent rounded-full animate-spin"></div>
-        </div>
-        <p className="text-gray-300 mb-2 font-medium">Starting Camera...</p>
-        <p className="text-gray-400 text-sm">Please allow camera access when prompted</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="qr-scanner-container">
-      <div 
-        id="qr-reader" 
-        className="rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 bg-black"
-        style={{ width: '100%', maxWidth: '500px', margin: '0 auto' }}
-      />
-      <p className="text-center text-sm text-gray-300 mt-4 flex items-center justify-center gap-2">
-        <svg className="w-5 h-5 animate-pulse text-green-400" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-        </svg>
-        Camera Active - Position QR code in frame
-      </p>
+    <div className="qr-scanner-container space-y-4">
+      {!isScanning && (
+        <div className="text-center p-8 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
+          <div className="mb-4">
+            <div className="w-16 h-16 mx-auto border-4 border-messmate-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <p className="text-gray-300 mb-2 font-medium">Starting Camera...</p>
+          <p className="text-gray-400 text-sm">Please allow camera access when prompted</p>
+        </div>
+      )}
+      
+      {/* Camera Preview */}
+      <div className="relative">
+        <div 
+          id="qr-reader" 
+          className={`rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 bg-black ${!isScanning ? 'hidden' : ''}`}
+          style={{ width: '100%', maxWidth: '500px', minHeight: '400px', margin: '0 auto' }}
+        />
+        
+        {/* Last Scanned Indicator */}
+        {lastScanned && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-pulse">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span className="font-medium">QR Code Detected!</span>
+          </div>
+        )}
+      </div>
+      
+      {isScanning && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-300">
+            <svg className="w-5 h-5 animate-pulse text-green-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>Camera Active - Position QR code in frame</span>
+          </div>
+          
+          {/* Stop Camera Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleStopCamera}
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition-all duration-300 flex items-center gap-2 hover:shadow-xl"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+              </svg>
+              Stop Camera
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

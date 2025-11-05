@@ -53,7 +53,7 @@ const LoginPage = () => {
               required
               value={formState.email}
               onChange={handleChange}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
+              className="mt-2 w-full rounded-xl border border-white/20 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
               placeholder="Enter your email"
             />
           </div>
@@ -69,7 +69,7 @@ const LoginPage = () => {
               required
               value={formState.password}
               onChange={handleChange}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
+              className="mt-2 w-full rounded-xl border border-white/20 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
               placeholder="Enter your password"
             />
           </div>

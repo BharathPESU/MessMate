@@ -52,7 +52,7 @@ const RegisterPage = () => {
             value={formState.name}
             onChange={handleChange}
             required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
           />
         </div>
         <div className="md:col-span-1">
@@ -64,7 +64,7 @@ const RegisterPage = () => {
             value={formState.email}
             onChange={handleChange}
             required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
           />
         </div>
         <div className="md:col-span-1">
@@ -75,7 +75,7 @@ const RegisterPage = () => {
             value={formState.phone}
             onChange={handleChange}
             required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
           />
         </div>
         <div className="md:col-span-1">
@@ -86,7 +86,7 @@ const RegisterPage = () => {
             value={formState.rollNumber}
             onChange={handleChange}
             required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
           />
         </div>
         <div className="md:col-span-2">
@@ -98,7 +98,7 @@ const RegisterPage = () => {
             value={formState.password}
             onChange={handleChange}
             required
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
+            className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-messmate-secondary focus:outline-none focus:ring"
           />
         </div>
         {error && <p className="md:col-span-2 text-sm text-red-500">{error}</p>}
