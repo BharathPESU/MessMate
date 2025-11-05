@@ -7,13 +7,20 @@ import RegisterPage from './pages/RegisterPage.jsx';
 import UserDashboard from './pages/UserDashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminScannerPage from './pages/AdminScannerPage.jsx';
+import ParticlesBackground from './components/ParticlesBackground.jsx';
 import './App.css';
 
 function App() {
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
+      <ParticlesBackground />
+      <div className="dashboard-backdrop"></div>
+      <div className="liquid-blob-1"></div>
+      <div className="liquid-blob-2"></div>
+      <div className="liquid-blob-3"></div>
+
       <Navbar />
-      <main className="px-4 pb-8">
+      <main className="relative z-10 px-4 pb-12 pt-6 lg:px-10">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />

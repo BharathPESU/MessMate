@@ -32,19 +32,23 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
-      <div className="glass-dark w-full max-w-md rounded-3xl p-8 shadow-2xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Welcome back</h1>
-          <p className="mt-2 text-white/60">
-            Sign in to manage your meal credits
+    <section className="relative flex min-h-[calc(100vh-120px)] items-center justify-center px-4 py-16">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-emerald/10 via-transparent to-accent-indigo/10" />
+      <div className="glass-card relative z-10 w-full max-w-lg rounded-3xl border border-white/10 p-10 shadow-emerald">
+        <div className="mb-8 text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-brand-emerald/30 bg-brand-emerald/10 px-3 py-1 text-xs uppercase tracking-[0.3em] text-brand-emerald">
+            Secure access
+          </span>
+          <h1 className="mt-4 text-3xl font-semibold text-white">Welcome back to MessMate</h1>
+          <p className="mt-2 text-sm text-neutral-300/70">
+            Sign in with your email and password to manage credits or scan meals from the futuristic mess console.
           </p>
         </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-white/80">
-              Email
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2 text-left">
+            <label htmlFor="email" className="text-xs uppercase tracking-[0.3em] text-neutral-300/60">
+              Email address
             </label>
             <input
               id="email"
@@ -53,13 +57,13 @@ const LoginPage = () => {
               required
               value={formState.email}
               onChange={handleChange}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
-              placeholder="Enter your email"
+              className="cyber-input"
+              placeholder="you@college.edu"
             />
           </div>
-          
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-white/80">
+
+          <div className="space-y-2 text-left">
+            <label htmlFor="password" className="text-xs uppercase tracking-[0.3em] text-neutral-300/60">
               Password
             </label>
             <input
@@ -69,34 +73,36 @@ const LoginPage = () => {
               required
               value={formState.password}
               onChange={handleChange}
-              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
-              placeholder="Enter your password"
+              className="cyber-input"
+              placeholder="Enter your secret passcode"
             />
           </div>
-          
+
           {error && (
-            <div className="rounded-xl bg-red-500/20 px-4 py-3 text-sm text-red-200">
+            <div className="status-error">
               {error}
             </div>
           )}
-          
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-messmate-primary to-messmate-secondary px-4 py-3 font-medium text-white shadow-lg transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-70"
+            className="cyber-btn w-full justify-center disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {loading ? 'Signing in...' : 'Login'}
+            {loading ? 'Signing you in…' : 'Access MessMate'}
           </button>
         </form>
-        
-        <p className="mt-6 text-center text-sm text-white/60">
+
+        <p className="mt-8 text-center text-sm text-neutral-300/60">
           New here?{' '}
-          <Link to="/register" className="font-medium text-white hover:text-messmate-secondary">
+          <Link to="/register" className="text-brand-emerald transition hover:text-brand-emerald/80">
             Create an account
           </Link>
         </p>
       </div>
-    </div>
+      <div className="absolute -right-24 hidden h-80 w-80 rounded-full bg-brand-emerald/20 blur-[160px] md:block" />
+      <div className="absolute -left-24 bottom-0 hidden h-80 w-80 rounded-full bg-accent-indigo/20 blur-[160px] md:block" />
+    </section>
   );
 };
 

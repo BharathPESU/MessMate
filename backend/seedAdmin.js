@@ -4,17 +4,15 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import User from './models/User.js';
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
-const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'messmate';
-
 const seedAdmin = async () => {
   try {
-    await mongoose.connect(MONGO_URI, { dbName: MONGO_DB_NAME });
-    console.log('Connected to MongoDB');
+    // Use the same connection URI from environment
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ Connected to MongoDB Atlas');
 
     const existingAdmin = await User.findOne({ role: 'admin' });
     if (existingAdmin) {
-      console.log('Admin user already exists:', existingAdmin.email);
+      console.log('⚠️  Admin user already exists:', existingAdmin.email);
       process.exit(0);
     }
 
@@ -33,13 +31,13 @@ const seedAdmin = async () => {
     });
 
     console.log('✅ Admin user created successfully!');
-    console.log('Email:', admin.email);
-    console.log('Password: admin123');
-    console.log('\nYou can now login with these credentials.');
+    console.log('📧 Email:', admin.email);
+    console.log('🔑 Password: admin123');
+    console.log('\n💡 You can now login with these credentials.');
 
     process.exit(0);
   } catch (error) {
-    console.error('Error seeding admin:', error);
+    console.error('❌ Error seeding admin:', error.message);
     process.exit(1);
   }
 };

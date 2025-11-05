@@ -35,19 +35,19 @@ const AdminScannerPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 py-8">
+    <div className="relative mx-auto max-w-3xl space-y-6 py-8">
       {/* HTTP Camera Access Info Banner */}
       {window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && (
-        <div className="glass-dark rounded-2xl p-4 border-l-4 border-yellow-400">
+        <div className="glass-card border-l-4 border-yellow-400 rounded-2xl p-4 shadow-cyber">
           <div className="flex items-start gap-3">
             <svg className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-yellow-400">Camera Access Limited on HTTP</h3>
-              <p className="mt-1 text-xs text-white/70">
+              <h3 className="text-sm font-semibold font-rajdhani text-yellow-400">Camera Access Limited on HTTP</h3>
+              <p className="mt-1 text-xs text-neon-light/70 font-rajdhani">
                 For camera scanner to work, access this page via{' '}
-                <span className="font-mono bg-black/30 px-1.5 py-0.5 rounded text-green-400">http://localhost:5173</span>{' '}
+                <span className="font-mono bg-cyber-black/50 px-1.5 py-0.5 rounded text-neon-green">http://localhost:5173</span>{' '}
                 instead of the IP address. Or use Manual Entry mode below.
               </p>
             </div>
@@ -55,52 +55,54 @@ const AdminScannerPage = () => {
         </div>
       )}
 
-      <div className="glass-dark rounded-3xl p-6 shadow-2xl">
-        <h1 className="text-xl font-semibold text-white">QR Scanner</h1>
-        <p className="mt-1 text-sm text-white/60">
+      <div className="glass-card neon-border rounded-3xl p-8 shadow-cyber animate-float">
+        <h1 className="text-2xl font-semibold font-orbitron neon-glow">QR Scanner</h1>
+        <p className="mt-2 text-sm text-neon-light/70 font-rajdhani tracking-wide">
           Scan a student's QR code or enter manually to deduct credits.
         </p>
 
-        <div className="mt-6 flex gap-2">
+        <div className="mt-8 flex gap-3">
           <button
             onClick={() => setUseManual(false)}
-            className={`rounded-xl px-5 py-2.5 text-sm font-medium transition ${
+            className={`rounded-full px-6 py-3 text-sm font-medium font-rajdhani tracking-wide transition-all duration-300 ${
               !useManual
-                ? 'bg-gradient-to-r from-messmate-primary to-messmate-secondary text-white shadow-lg'
-                : 'bg-white/10 text-white/70 hover:bg-white/20'
+                ? 'bg-gradient-to-r from-neon-emerald to-neon-green text-cyber-black shadow-neon-lg'
+                : 'bg-white/5 text-neon-light/70 border border-neon-green/20 hover:border-neon-green/50 hover:text-neon-green'
             }`}
           >
             Camera Scanner
           </button>
           <button
             onClick={() => setUseManual(true)}
-            className={`rounded-xl px-5 py-2.5 text-sm font-medium transition ${
+            className={`rounded-full px-6 py-3 text-sm font-medium font-rajdhani tracking-wide transition-all duration-300 ${
               useManual
-                ? 'bg-gradient-to-r from-messmate-primary to-messmate-secondary text-white shadow-lg'
-                : 'bg-white/10 text-white/70 hover:bg-white/20'
+                ? 'bg-gradient-to-r from-neon-emerald to-neon-green text-cyber-black shadow-neon-lg'
+                : 'bg-white/5 text-neon-light/70 border border-neon-green/20 hover:border-neon-green/50 hover:text-neon-green'
             }`}
           >
             Manual Entry
           </button>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-8">
           {useManual ? (
-            <form onSubmit={handleManualSubmit} className="space-y-4">
+            <form onSubmit={handleManualSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-white/80">QR Code Data</label>
+                <label className="block text-sm font-medium font-rajdhani tracking-wide text-neon-green">
+                  QR Code Data
+                </label>
                 <input
                   type="text"
                   value={manualInput}
                   onChange={(e) => setManualInput(e.target.value)}
                   placeholder="Paste QR code data here"
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-white/30 backdrop-blur-sm focus:border-messmate-primary focus:outline-none focus:ring-2 focus:ring-messmate-primary/50"
+                  className="cyber-input mt-2 w-full"
                 />
               </div>
               <button
                 type="submit"
                 disabled={scanning || !manualInput.trim()}
-                className="w-full rounded-xl bg-gradient-to-r from-messmate-primary to-messmate-secondary px-4 py-3 font-medium text-white shadow-lg transition hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                className="cyber-btn w-full disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {scanning ? 'Processing...' : 'Deduct Credit'}
               </button>
@@ -116,10 +118,14 @@ const AdminScannerPage = () => {
           )}
         </div>
 
-        <div className="mt-6 rounded-xl bg-white/5 p-4">
-          <p className="text-sm font-medium text-white/80">Status</p>
-          <p className="mt-2 text-sm text-white/70">{status}</p>
-          {error && <p className="mt-2 rounded-xl bg-red-500/20 p-3 text-sm text-red-200">{error}</p>}
+        <div className="mt-8 glass-dark rounded-xl border border-neon-green/20 p-5">
+          <p className="text-sm font-medium font-rajdhani tracking-wide text-neon-cyan">Status</p>
+          <p className="mt-3 text-sm text-neon-light/80 font-rajdhani">{status}</p>
+          {error && (
+            <div className="status-error mt-3">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
