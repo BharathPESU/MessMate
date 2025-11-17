@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import QRScanner from '../components/QRScanner.jsx';
 import { scanAndDeduct } from '../api/adminApi.js';
 
@@ -9,21 +9,58 @@ const AdminScannerPage = () => {
   const [manualInput, setManualInput] = useState('');
   const [useManual, setUseManual] = useState(false);
 
+  // Use refs to avoid React state async race conditions when scans arrive rapidly
+  const scanningRef = useRef(false);
+  const cooldownRef = useRef(false);
+
+  const speak = (text) => {
+    try {
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(text);
+        // Use a neutral voice if available
+        utter.lang = 'en-US';
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+      }
+    } catch (e) {
+      console.warn('Speech synth failed:', e);
+    }
+  };
+
   const handleScan = async (data) => {
-    if (!data || scanning) return;
+    if (!data) return;
+    // Ignore if already processing a scan or in cooldown (5s)
+    if (scanningRef.current || cooldownRef.current) return;
+
+    scanningRef.current = true;
     setScanning(true);
     setError('');
     setStatus('Processing scan...');
 
     try {
       const response = await scanAndDeduct({ qrData: data, amount: 1 });
-      setStatus(`✅ Success! User now has ${response.newBalance} credits remaining.`);
+      const name = response.userName || 'User';
+      setStatus(`✅ Success! ${name} now has ${response.newBalance} credits remaining.`);
       setError('');
+
+      // Announce via speaker
+      speak(`${name}, credit successfully deducted`);
+
+      // Enter cooldown: prevent further deductions for 5 seconds
+      cooldownRef.current = true;
+      setTimeout(() => {
+        cooldownRef.current = false;
+      }, 5000);
+
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to deduct credits');
       setStatus('Scan failed. Please try again.');
     } finally {
-      setTimeout(() => setScanning(false), 2000);
+      // allow scanner to be triggered again after scanning state resets
+      setTimeout(() => {
+        scanningRef.current = false;
+        setScanning(false);
+      }, 500);
     }
   };
 

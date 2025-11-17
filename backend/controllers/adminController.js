@@ -35,7 +35,8 @@ export const scanAndDeduct = asyncHandler(async (req, res) => {
 
   return res.json({
     message: 'Credit deducted successfully',
-    newBalance: user.credits
+    newBalance: user.credits,
+    userName: user.name
   });
 });
 
